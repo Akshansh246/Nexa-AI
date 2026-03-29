@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  /* Nexa AI Brand Colors */
+  --color-nexa-primary: #2979FF;
+  --color-nexa-secondary: #7C4DFF;
+  --color-nexa-tertiary: #00E5FF;
+  --color-nexa-dark: #0F172A;
+
+  /* Optional shades (for better UI depth) */
+  --color-nexa-primary-dark: #1C54B2;
+  --color-nexa-secondary-dark: #5A36B2;
+  --color-nexa-tertiary-dark: #00A3B2;
+}
+
+*{
+    font-family: monospace;
+}
+
+.bg-nexa-radial {
+  background: radial-gradient(
+    circle at 50% 40%,
+    rgba(41, 121, 255, 0.15) 0%,
+    rgba(124, 77, 255, 0.1) 25%,
+    #0F172A 60%,
+    #020617 100%
+  );
+}
+
+@property --ang {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes animateBorder {
+    from{
+        --ang: 0deg;
+    }
+    to{
+        --ang: 360deg;
+    }
+}
+
+.box{
+    background: linear-gradient(#020617) padding-box,
+    conic-gradient(from var(--ang),#020617,#020617,#020617,#a51919,#b8b829,#2979FF, #020617, #020617, #020617) border-box;
+    border: 5px solid rgba(0, 0, 0, 0);
+    animation: animateBorder 6s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-play-state: running;
+    transition: all 0.4s linear;
+    text-shadow: 0 0 10px rgb(213, 12, 126);
+}
+
+.bg-pic{
+    background-image: url('https://ik.imagekit.io/devakshu/bg.png');
+    background-position: center;
+    background-size: cover;
+}
