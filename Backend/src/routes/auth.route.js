@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerController, verifyEmailController, loginController, getMeController } from '../controllers/auth.controller.js';
+import { registerController, verifyEmailController, loginController, getMeController, logoutController } from '../controllers/auth.controller.js';
 import { registerValidation, loginValidation } from '../validations/auth.validation.js';
 import { IdentifyUser } from '../middlewares/auth.middleware.js';
 
@@ -36,5 +36,12 @@ authRouter.get('/get-me', IdentifyUser, getMeController)
  * @query { token }
  */
 authRouter.get('/verify-email', verifyEmailController)
+
+/**
+ * @route /api/auth/logout
+ * @description Logs out the user by clearing the cookie
+ * @access private
+ */
+authRouter.post('/logout', logoutController) 
 
 export default authRouter

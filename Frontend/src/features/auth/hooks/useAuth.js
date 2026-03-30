@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useDispatch } from 'react-redux'
-import { getMe, login, register } from '../services/auth.api'
+import { getMe, login, logout, register } from '../services/auth.api'
 import { setError, setLoading, setUser } from '../auth.slice'
 
 export function useAuth(){
@@ -41,9 +41,22 @@ export function useAuth(){
         }
     }
 
+    async function handleLogout() {
+        try {
+            dispatch(setLoading(true))
+            await logout()
+            dispatch(setUser(null))
+        } catch (error) {
+            dispatch(setError(error.response?.data?.message || "Logout Failed"))
+        } finally {
+            dispatch(setLoading(false))
+        }
+    }
+
     return{
         handleRegister, 
         handleGetMe, 
         handleLogin,
+        handleLogout,
     }
 }

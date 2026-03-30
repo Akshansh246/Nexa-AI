@@ -1,31 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  /* Nexa AI Brand Colors */
-  --color-nexa-primary: #2979FF;
-  --color-nexa-secondary: #7C4DFF;
-  --color-nexa-tertiary: #00E5FF;
-  --color-nexa-dark: #0F172A;
+  /* Nexa AI Brand Colors (neutralized) */
+  --color-nexa-primary: #3B3F46;      /* soft neutral gray */
+  --color-nexa-secondary: #2A2D33;    /* darker gray layer */
+  --color-nexa-tertiary: #1F2126;     /* deep surface tone */
+  --color-nexa-dark: #0B0B0C;         /* base background */
 
-  /* Optional shades (for better UI depth) */
-  --color-nexa-primary-dark: #1C54B2;
-  --color-nexa-secondary-dark: #5A36B2;
-  --color-nexa-tertiary-dark: #00A3B2;
+  /* Optional shades (depth + gradients) */
+  --color-nexa-primary-dark: #2C2F35;
+  --color-nexa-secondary-dark: #1A1C20;
+  --color-nexa-tertiary-dark: #121316;
 }
 
 *{
     font-family: monospace;
 }
 
-.bg-nexa-radial {
-  background: radial-gradient(
-    circle at 50% 40%,
-    rgba(41, 121, 255, 0.15) 0%,
-    rgba(124, 77, 255, 0.1) 25%,
-    #0F172A 60%,
-    #020617 100%
-  );
-}
+
 
 @property --ang {
     syntax: "<angle>";
@@ -43,8 +35,8 @@
 }
 
 .box{
-    background: linear-gradient(#020617) padding-box,
-    conic-gradient(from var(--ang),#020617,#020617,#020617,#a51919,#b8b829,#2979FF, #020617, #020617, #020617) border-box;
+    background: linear-gradient(#0B0B0C) padding-box,
+    conic-gradient(from var(--ang),#0B0B0C,#0B0B0C,#0B0B0C,#a51919,#b8b829,#2979FF, #0B0B0C, #0B0B0C, #0B0B0C) border-box;
     border: 5px solid rgba(0, 0, 0, 0);
     animation: animateBorder 6s;
     animation-iteration-count: infinite;

@@ -3,6 +3,7 @@ import Footer from "../components/Footer";
 import { Link, Navigate, useNavigate } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 import { useSelector } from "react-redux";
+import Loading from './Loading'
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -27,12 +28,16 @@ const Login = () => {
         navigate('/')
     }
 
+    if(loading){
+        return <Loading/>
+    }
+
     if(!loading && user){
         return <Navigate to={'/'} replace />
     }
 
     return (
-        <main className="h-screen w-screen relative text-nexa-tertiary bg-[radial-gradient(circle_at_center,#1e3a8a_0%,#0F172A_60%,#020617_100%)]">
+        <main className="h-screen w-screen relative text-white bg-[radial-gradient(circle_at_center,#1F2126_0%,#0F1115_60%,#0B0B0C_100%)]">
             <nav className="w-full flex justify-between py-4 px-7 text-xl">
                 <img
                 className="w-15"

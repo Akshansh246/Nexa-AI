@@ -158,3 +158,12 @@ export async function verifyEmailController(req, res) {
         });
     }
 }
+
+export async function logoutController(req, res) {
+    res.clearCookie('token')
+
+    res.status(200).json({
+        message:"Logout Successfull",
+        success:true,
+    })
+}

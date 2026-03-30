@@ -4,9 +4,11 @@ import { useSelector } from "react-redux";
 import { useChat } from "../hooks/useChat";
 import ReactMarkdown from "react-markdown";
 import TypingText from "../utils/TypingText";
+import { useAuth } from "../../auth/hooks/useAuth";
 
 const Dashboard = () => {
     const chat = useChat();
+    const {handleLogout} = useAuth()
     const { user } = useSelector((state) => state.auth);
     const [chatInput, setChatInput] = useState('');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -18,7 +20,6 @@ const Dashboard = () => {
 
     const chats = useSelector((state) => state.chat.chats )
     const currentChatId = useSelector((state) => state.chat.currentChatId)
-    // const isLoading = useSelector((state) => state.chat.isLoading)
 
     useEffect(() => {
         chat.initializeSocketConnection();
@@ -93,6 +94,10 @@ const Dashboard = () => {
         }
     };
 
+    function handleNewChat(){
+        window.location.reload()
+    }
+
 
     return (
         <div className="bg-linear-to-br flex from-[#020617] via-nexa-dark to-nexa-primary w-screen h-screen text-white"
@@ -100,25 +105,36 @@ const Dashboard = () => {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
         >
+        {/* Sidebar */}
         <aside
             className={`
-                absolute top-0 left-0 h-full w-3/4 z-50
+                absolute top-0 left-0 h-full w-1/3 z-50
                 bg-nexa-dark transform transition-transform duration-300 ease-in-out
                 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
 
-                lg:static lg:translate-x-0 lg:w-1/6 lg:flex flex-col
+                lg:static lg:translate-x-0 lg:w-1/4 lg:flex flex-col
             `}
             >
             <div className="flex h-9/10 lg:h-full flex-col lg:justify-between px-4 py-7">
-                <div className="flex border-b pb-5">
+                <div className="flex border-b pb-6">
                     <img
                     className="w-15"
                     src="https://ik.imagekit.io/devakshu/logo.png"
                     alt="NEXA"
                     />
                 </div>
-                <div className=" h-160 overflow-auto">
-                    <h3 className="font-bold text-2xl mb-2">Recent Chats</h3>
+                <div className="h-160 overflow-auto">
+                    <div className="flex justify-between items-center">
+                        <h3 className="font-bold text-2xl mb-2 mt-5">Recent Chats</h3>
+                        <svg 
+                        onClick={handleNewChat}
+                        className="w-5 cursor-pointer" 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        viewBox="0 0 24 24" fill="currentColor"
+                        >
+                            <path d="M13.0001 10.9999L22.0002 10.9997L22.0002 12.9997L13.0001 12.9999L13.0001 21.9998L11.0001 21.9998L11.0001 12.9999L2.00004 13.0001L2 11.0001L11.0001 10.9999L11 2.00025L13 2.00024L13.0001 10.9999Z"></path></svg>
+                    </div>
+
                     <div className="w-full flex flex-col-reverse gap-1">
                         {Object.values(chats).map((chat,index)=>(
                             <button
@@ -127,7 +143,7 @@ const Dashboard = () => {
                                     setIsSidebarOpen(false)
                                 }}
                                 key={index}
-                                className="w-full text-left p-2 rounded-lg cursor-pointer hover:bg-nexa-tertiary/20"
+                                className="w-full text-left p-3 rounded-lg cursor-pointer hover:bg-nexa-tertiary/20"
                             >
                                 {chat.title}
                             </button>
@@ -139,15 +155,19 @@ const Dashboard = () => {
                 <div className="uppercase bg-nexa-primary-dark w-fit text-2xl py-2 px-3 rounded-full border-2 border-nexa-tertiary-dark ">
                     {user.username.slice(0, 2)}
                 </div>
-                <p className="capitalize font-bold text-2xl">{user.username}</p>
-                <p className="text-white font-semibold text-lg"><sup>PRO</sup></p>
+                <div>
+                    <p className="capitalize font-bold text-2xl">{user.username}</p>
+                    <p className="text-white/40 font-semibold text-sm">MISTRAL-SMALL</p>
+                </div>
             </div>
         </aside>
+        
 
+        {/* Top navbar */}
         <div className="w-full h-full relative flex flex-col items-center justify-between ">
             <div className="flex items-center justify-between lg:justify-end  w-full px-5 py-3">
                 <svg onClick={() => setIsSidebarOpen(true)} className="w-8 cursor-pointer lg:hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.9997 4H6.99967V6H20.9997V4ZM20.9997 11H10.9997V13H20.9997V11ZM20.9997 18H6.99967V20H20.9997V18ZM1.98926 8.81412L3.40347 7.3999L7.99967 11.9961L3.40347 16.5923L1.98926 15.1781L5.17124 11.9961L1.98926 8.81412Z"></path></svg>
-                <div className="flex gap-3">
+                <div className="flex gap-5">
                     <svg
                         className="w-8 cursor-pointer"
                         xmlns="http://www.w3.org/2000/svg"
@@ -156,6 +176,13 @@ const Dashboard = () => {
                     >
                         <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM11 15V17H13V15H11ZM13 13.3551C14.4457 12.9248 15.5 11.5855 15.5 10C15.5 8.067 13.933 6.5 12 6.5C10.302 6.5 8.88637 7.70919 8.56731 9.31346L10.5288 9.70577C10.6656 9.01823 11.2723 8.5 12 8.5C12.8284 8.5 13.5 9.17157 13.5 10C13.5 10.8284 12.8284 11.5 12 11.5C11.4477 11.5 11 11.9477 11 12.5V14H13V13.3551Z"></path>
                     </svg>
+                    <svg 
+                    className="w-8 cursor-pointer"
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" 
+                    fill="currentColor"
+                    >
+                        <path d="M3 3H6.6V6.6L10.2001 6.6001V10.2001L13.8 10.2002L13.8 6.6001H17.3999V3H20.9999V20.9999H17.3999V13.8002L13.8 13.7998V17.3998H10.2V13.8002L6.6 13.7998V20.9999H3V3Z"></path></svg>
                     <svg
                         className="w-8 cursor-pointer"
                         xmlns="http://www.w3.org/2000/svg"
@@ -164,20 +191,25 @@ const Dashboard = () => {
                     >
                     <path d="M23.9996 12.0235C17.5625 12.4117 12.4114 17.563 12.0232 24H11.9762C11.588 17.563 6.4369 12.4117 0 12.0235V11.9765C6.4369 11.5883 11.588 6.43719 11.9762 0H12.0232C12.4114 6.43719 17.5625 11.5883 23.9996 11.9765V12.0235Z"></path>
                     </svg>
+                    <svg 
+                    onClick={handleLogout}
+                    className="w-8 cursor-pointer"
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" 
+                    fill="currentColor"
+                    >
+                        <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C15.2713 2 18.1757 3.57078 20.0002 5.99923L17.2909 5.99931C15.8807 4.75499 14.0285 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C14.029 20 15.8816 19.2446 17.2919 17.9998L20.0009 17.9998C18.1765 20.4288 15.2717 22 12 22ZM19 16V13H11V11H19V8L24 12L19 16Z"></path></svg>
                 </div>
             </div>
 
+            {/* chat container */}
+
             <div ref={containerRef} className="overflow-auto w-full px-8 lg:px-25 h-full bg-nexa-dark/50 backdrop-blur-lg ">
-            {chats[currentChatId]?.messages.length === 0 ? (
-                <div className="w-full h-full flex flex-col items-center justify-center gap-5">
-                    <p className="text-nexa-primary font-semibold text-lg">No Chats Yet. Start the conversation!</p>
-                </div>
-            ): 
-            chats[currentChatId]?.messages.map((msg) => (
+            {chats[currentChatId]?.messages.map((msg) => (
                 <div className="flex items-start gap-2" ref={chatEndRef}>
                     {isLastMessage = chats[currentChatId]?.messages.indexOf(msg) === chats[currentChatId]?.messages.length - 1}
                     {msg.role === "ai" ? (
-                        <div className="bg-nexa-primary p-2 rounded-full">
+                        <div className={`bg-nexa-primary p-2 rounded-full ${msg.isThinking ? "box" : ""} `}>
                             <svg
                                 className="w-7 text-white"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -200,7 +232,9 @@ const Dashboard = () => {
                             msg.isThinking ? (
                                 <div className="flex items-center gap-2 text-gray-400 italic">
                                 <span>Nexa is thinking</span>
-                                <span className="animate-pulse">...</span>
+                                <span className="animate-bounce">.</span>
+                                <span className="animate-bounce">.</span>
+                                <span className="animate-bounce">.</span>
                                 </div>
                             ) : (
                             <>
@@ -301,10 +335,22 @@ const Dashboard = () => {
                         )}
                     </div>
                 </div>
-            ))}
+            )) || (
+                <div className="w-full h-full flex flex-col items-center justify-center gap-5">
+                    <div className='flex flex-col items-center gap-5'>
+                        <div className='w-40 px-7 box shadow-2xl shadow-black py-10 rounded-full bg-nexa-secondary-dark backdrop-blur-2xl'>
+                            <img className='w-full' src="https://ik.imagekit.io/devakshu/logo.png" alt="" />
+                        </div>
+                        <div className='text-center flex flex-col gap-4'>
+                            <h1 className='text-white font-bold text-3xl lg:text-5xl'>How can I help you Today?</h1>
+                            <p className='text-lg text-nexa-primary'>start a new conversation and explore deep intelligence.</p>
+                        </div>
+                    </div>
+                </div>
+            )}
             </div>
 
-            <div className="w-full flex items-center justify-center bg-nexa-dark p-5">
+            <div className="w-full flex items-center justify-center bg-nexa-dark/10 backdrop-blur-2xl p-5">
             <div className=" flex items-center justify-between w-full lg:w-3/4 bg-nexa-dark p-2 rounded-4xl box">
                 <input
                 value={chatInput}
