@@ -3,40 +3,44 @@ import chatModel from '../models/chat.model.js'
 import messageModel from '../models/message.model.js'
 
 export async function messageController(req, res) {
-    const {message, chat:chatId} = req.body
+    const { message, chat: chatId } = req.body;
 
-    let title=null, chat=null;
+    let title = null;
+    let chat = null;
 
-    if(!chatId){
-            title = await generateChatTitle(message)
-            chat = await chatModel.create({
-            user:req.user.id,
+    if (!chatId) {
+        title = await generateChatTitle(message);
+
+        chat = await chatModel.create({
+            user: req.user.id,
             title
-        })
+        });
+    } else {
+        // 🔥 FIX: fetch existing chat
+        chat = await chatModel.findById(chatId);
     }
 
     const userMessage = await messageModel.create({
-        chat:chatId || chat._id,
-        content:message,
-        role:'user'
-    })
-    
-    const messages = await messageModel.find({chat:chatId || chat._id})
+        chat: chat._id,
+        content: message,
+        role: 'user'
+    });
 
-    const result = await generateResponse(messages)
+    const messages = await messageModel.find({ chat: chat._id });
+
+    const result = await generateResponse(messages);
 
     const aiMessage = await messageModel.create({
-        chat:chatId || chat._id,
-        content:result,
-        role:'ai'
-    })
+        chat: chat._id,
+        content: result,
+        role: 'ai'
+    });
 
     res.status(201).json({
         title,
-        chat,
+        chat, // ✅ always valid now
         aiMessage
-    })
-
+    });
 }
 
 export async function getChatsController(req, res) {
